@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\ComponentProduct;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -21,15 +20,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'phone' => '0900000000',
-            'address' => '123 Đường ABC',
-            'city' => 'HN',
-            'role' => 'admin',
-        ]);
+        $admin = User::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'phone' => '0900000000',
+                'address' => '123 Đường ABC',
+                'city' => 'HN',
+                'role' => 'admin',
+            ]
+        );
         $user = User::updateOrCreate(
             ['email' => 'test@example.com'],
             [
@@ -154,32 +155,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        $componentRows = [
-            ['parent' => 'PC Gaming Ryzen 5 5600 + RTX 4060', 'child' => 'CPU Intel Core i7-14700K', 'quantity' => 1],
-            ['parent' => 'PC Gaming Ryzen 5 5600 + RTX 4060', 'child' => 'Mainboard B760M DDR5', 'quantity' => 1],
-            ['parent' => 'PC Gaming Ryzen 5 5600 + RTX 4060', 'child' => 'RAM 32GB DDR5 6000MHz', 'quantity' => 1],
-            ['parent' => 'PC Gaming Ryzen 5 5600 + RTX 4060', 'child' => 'SSD NVMe 1TB Gen4', 'quantity' => 1],
-        ];
-
-        foreach ($componentRows as $row) {
-            $parent = $productModels->get($row['parent']);
-            $child = $productModels->get($row['child']);
-
-            if (! $parent || ! $child) {
-                continue;
-            }
-
-            ComponentProduct::updateOrCreate(
-                [
-                    'parent_id' => $parent->id,
-                    'child_id' => $child->id,
-                ],
-                [
-                    'quantity' => $row['quantity'],
-                ]
-            );
-        }
-
         $orders = collect([
             [
                 'address' => '123 Đường ABC, Hà Nội',
@@ -215,6 +190,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
         foreach ($orders as $orderData) {
+            $syncData = [];
+            $totalPrice = 0;
+
+            foreach ($orderData['items'] as $item) {
+                $product = $productModels->firstWhere('name', $item['product']);
+
+                if (! $product) {
+                    continue;
+                }
+
+                $quantity = (int) $item['quantity'];
+                $price = (int) $product->price;
+
+                $syncData[$product->id] = [
+                    'quantity' => $quantity,
+                    'price' => $price,
+                ];
+
+                $totalPrice += $price * $quantity;
+            }
+
             $order = Order::updateOrCreate(
                 [
                     'user_id' => $user->id,
@@ -224,18 +220,11 @@ class DatabaseSeeder extends Seeder
                     'is_paid' => $orderData['is_paid'],
                     'status' => $orderData['status'],
                     'shipping_fee' => $orderData['shipping_fee'],
+                    'total_price' => $totalPrice,
                 ]
             );
 
-            $syncData = [];
-            foreach ($orderData['items'] as $item) {
-                $product = $productModels->firstWhere('name', $item['product']);
-                if ($product) {
-                    $syncData[$product->id] = ['quantity' => $item['quantity']];
-                }
-            }
-
-            $order->products()->syncWithoutDetaching($syncData);
+            $order->products()->sync($syncData);
         }
     }
 }
