@@ -81,7 +81,7 @@
                         <a href="{{ route('viewLogin') }}" class="text-white text-decoration-none">Đăng nhập</a>
                     @else
                         @if(Auth::user()->role === 'admin')
-                            <a href="{{ route('admin.add_product') }}" class="text-white text-decoration-none me-3">Quản trị</a>
+                            <a href="{{ route('admin.products.index') }}" class="text-white text-decoration-none me-3">Quản trị</a>
                             <span class="text-white category-btn">|</span>
                         @endif
                         <a href="{{ route('profile.edit') }}" class="text-white text-decoration-none">Thông tin tài khoản</a>

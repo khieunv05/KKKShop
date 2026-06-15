@@ -9,7 +9,7 @@
                     <p class="text-uppercase text-muted mb-1" style="letter-spacing: .18em; font-size: 12px;">Admin panel</p>
                     <h2 class="mb-0">Doanh thu theo tháng</h2>
                 </div>
-                <a href="{{ route('admin.add_product') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-arrow-left me-2"></i>Quay lại
                 </a>
             </div>
@@ -71,15 +71,15 @@
                             </thead>
                             <tbody>
                                 @forelse ($products as $product)
-                                    <tr>
-                                        <td>{{ $product->name }}</td>
-                                        <td class="text-end">{{ $product->total_quantity }}</td>
-                                        <td class="text-end">{{ number_format($product->total_revenue) }} đ</td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ $product->name }}</td>
+                                    <td class="text-end">{{ $product->total_quantity }}</td>
+                                    <td class="text-end">{{ number_format($product->total_revenue) }} đ</td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted py-4">Không có dữ liệu trong tháng này.</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">Không có dữ liệu trong tháng này.</td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>

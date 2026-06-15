@@ -39,7 +39,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/products/store', [ProductController::class, 'store'])->name('admin.store_product');
     Route::get('/admin/products', [ProductController::class, 'index'])->name('admin.products.index');
     Route::get('/admin/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::post('/admin/products/{id}/update', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::match(['post', 'put'], '/admin/products/{id}/update', [ProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
     Route::get('/admin/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
