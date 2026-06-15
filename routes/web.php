@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -35,3 +36,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/products/add', [AdminController::class, 'addProduct'])->name('admin.add_product');
     Route::post('/admin/products/store', [AdminController::class, 'storeProduct'])->name('admin.store_product');
 });
+Route::middleware(['auth', 'admin'])->group(function () {
+    //Route::get('/user/dashboard', [UserController::class, 'viewDashboard'])->name('user.dashboard');
+    Route::get('/admin/revenue', [AdminController::class, 'viewRevenue'])->name('admin.revenue');
+});
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/products/add', [ProductController::class, 'create'])->name('admin.add_product');
+    Route::post('/admin/products/store', [ProductController::class, 'store'])->name('admin.store_product');
+    Route::get('/admin/products', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/admin/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
+    Route::post('/admin/products/{id}/update', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    Route::get('/admin/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::get('/admin/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+    Route::post('/admin/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::get('/admin/categories/{id}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+    Route::put('/admin/categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/admin/categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+    Route::patch('/admin/orders/{id}/paid', [OrderController::class, 'markPaid'])->name('admin.orders.paid');
+    Route::patch('/admin/orders/{id}/cancel', [OrderController::class, 'cancelByAdmin'])->name('admin.orders.cancel');
+});
+
+Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
