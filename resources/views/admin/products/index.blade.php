@@ -55,7 +55,9 @@
                                 @if($product->image)
                                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="rounded" style="width:72px; height:72px; object-fit:cover;">
                                 @else
-                                    <span class="text-muted">-</span>
+                                    <div class="rounded bg-light d-flex align-items-center justify-content-center text-muted" style="width:72px; height:72px;">
+                                        <i class="fa-solid fa-image fa-lg"></i>
+                                    </div>
                                 @endif
                             </td>
                             <td>
