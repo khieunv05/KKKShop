@@ -36,11 +36,9 @@
                         <div class="h-100 p-4 p-lg-5 d-flex flex-column justify-content-between">
                             <div>
                                 <div class="mb-4">
-                                    <div class="badge rounded-pill text-bg-light text-dark mb-3 px-3 py-2">Product form</div>
-                                    <h2 class="h4 fw-bold mb-3">Dữ liệu cần có</h2>
-                                    <p class="mb-0" style="opacity: .9; line-height: 1.7;">
-                                        Form này khớp với `storeProduct` trong `AdminController`: tên, mô tả, giá, tồn kho, bảo hành, ảnh và danh mục.
-                                    </p>
+                                    <div class="mb-5">
+                                    <h2 class="h4 fw-bold mb-2">Thông tin sản phẩm</h2>
+                                    <p class="mb-0" style="opacity: .9;">Nhập đầy đủ thông tin để tạo sản phẩm mới</p>
                                 </div>
 
                                 <div class="d-grid gap-3">
@@ -68,10 +66,7 @@
                                 </div>
                             </div>
 
-                            <div class="mt-4 pt-3 border-top border-light border-opacity-25">
-                                <div class="small" style="opacity:.85;">Lưu ý</div>
-                                <div class="fw-semibold">`warranty` là số tháng, không phải chuỗi.</div>
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -195,6 +190,7 @@
         background: rgba(255, 255, 255, 0.14);
         border: 1px solid rgba(255, 255, 255, 0.18);
         flex: 0 0 auto;
+        transition: none;
     }
 
     .category-card {
@@ -209,7 +205,6 @@
         border: 1px solid #e5e7eb;
         border-radius: 18px;
         background: #fff;
-        transition: all .2s ease;
         height: 100%;
     }
 
@@ -222,7 +217,7 @@
     .category-check:checked + .category-card-body {
         border-color: #0a3a5c;
         box-shadow: 0 10px 24px rgba(10, 58, 92, 0.12);
-        transform: translateY(-1px);
+        transform: none;
     }
 
     .check-indicator {
@@ -234,7 +229,7 @@
         justify-content: center;
         background: #eef2f7;
         color: transparent;
-        transition: all .2s ease;
+        transition: none;
         flex: 0 0 auto;
     }
 
