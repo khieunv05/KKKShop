@@ -9,6 +9,7 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{{ route('admin.add_product') }}" class="btn btn-primary">Thêm sản phẩm</a>
+            <a href="{{ route('admin.revenue') }}" class="btn btn-primary">Xem doanh thu</a>
             <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">Danh mục</a>
         </div>
     </div>

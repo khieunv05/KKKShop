@@ -4,9 +4,6 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h4 mb-0">Danh sách sản phẩm</h1>
-        @if(Auth::check() && Auth::user()->role === 'admin')
-            <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Vào trang admin</a>
-        @endif
     </div>
 
     <form method="GET" class="row g-2 mb-3">

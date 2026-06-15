@@ -6,15 +6,12 @@
         <div class="col-12 col-xl-10">
             <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
                 <div>
-                    <p class="text-uppercase text-muted mb-1" style="letter-spacing: .18em; font-size: 12px;">Admin panel</p>
-                    <a href="{{ route('admin.revenue') }}" class="btn btn-outline-secondary">
-                        Xem doanh thu
-                    </a>
+
                     <h1 class="h3 mb-2" style="color: #0a3a5c;">Thêm mới sản phẩm</h1>
                     <p class="text-muted mb-0">Nhập đầy đủ thông tin để tạo sản phẩm và gắn danh mục phù hợp.</p>
                 </div>
-                <a href="{{ url('/') }}" class="btn btn-outline-secondary">
-                    <i class="fa-solid fa-arrow-left me-2"></i>Quay lại trang chủ
+                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách sản phẩm
                 </a>
 
             </div>
