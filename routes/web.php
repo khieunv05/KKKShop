@@ -9,9 +9,7 @@ use App\Http\Controllers\UserController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',  [ProductController::class, 'publicIndex']);
 Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -31,11 +29,7 @@ Route::middleware('auth')->group(function () {
     })->name('profile.password.edit');
     Route::get('/orders', [UserController::class, 'viewOrders'])->name('orders.index');
 });
-Route::middleware(['auth', 'admin'])->group(function () {
-    //Route::get('/admin/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
-    Route::get('/admin/products/add', [AdminController::class, 'addProduct'])->name('admin.add_product');
-    Route::post('/admin/products/store', [AdminController::class, 'storeProduct'])->name('admin.store_product');
-});
+
 Route::middleware(['auth', 'admin'])->group(function () {
     //Route::get('/user/dashboard', [UserController::class, 'viewDashboard'])->name('user.dashboard');
     Route::get('/admin/revenue', [AdminController::class, 'viewRevenue'])->name('admin.revenue');
