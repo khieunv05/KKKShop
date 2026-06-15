@@ -32,6 +32,10 @@
                 <div class="card h-100 shadow-sm">
                     @if($product->image)
                         <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" style="height:220px; object-fit:cover;" alt="{{ $product->name }}">
+                    @else
+                        <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height:220px;">
+                            <i class="fa-solid fa-image fa-3x"></i>
+                        </div>
                     @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $product->name }}</h5>

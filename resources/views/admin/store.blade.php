@@ -39,7 +39,7 @@
                     <div class="col-lg-4" style="background: linear-gradient(160deg, #0a3a5c 0%, #153e65 55%, #ff6b35 100%); color: #fff;">
                         <div class="h-100 p-4 p-lg-5 d-flex flex-column justify-content-between">
                             <div>
-                                <div class="mb-4">
+                                <div class="mb-5">
                                     <h2 class="h4 fw-bold mb-2">Thông tin sản phẩm</h2>
                                     <p class="mb-0" style="opacity: .9;">Nhập đầy đủ thông tin để tạo sản phẩm mới</p>
                                 </div>
@@ -187,8 +187,8 @@
         align-items: center;
         justify-content: center;
         border-radius: 14px;
-        background: rgba(255, 255, 255, 0.14);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         flex: 0 0 auto;
         transition: none;
     }
@@ -217,7 +217,7 @@
     .category-check:checked+.category-card-body {
         border-color: #0a3a5c;
         box-shadow: 0 10px 24px rgba(10, 58, 92, 0.12);
-        transform: none;
+        transition: none;
     }
 
     .check-indicator {
@@ -236,6 +236,7 @@
     .category-check:checked+.category-card-body .check-indicator {
         background: #0a3a5c;
         color: #fff;
+        transition: none;
     }
 </style>
 @endsection

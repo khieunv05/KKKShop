@@ -25,8 +25,9 @@
                     <textarea name="description" rows="4" class="form-control">{{ old('description', $category->description ?? '') }}</textarea>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Lưu</button>
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary">Quay lại danh mục</a>
                 </div>
             </form>
         </div>

@@ -54,3 +54,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
+Route::get('/search', [ProductController::class, 'publicIndex'])->name('search');
+

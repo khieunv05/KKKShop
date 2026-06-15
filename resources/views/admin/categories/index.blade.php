@@ -47,5 +47,8 @@
             {{ $categories->links() }}
         </div>
     </div>
+    <div class="mt-3">
+        <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Quay lại danh sách sản phẩm</a>
+    </div>
 </div>
 @endsection
