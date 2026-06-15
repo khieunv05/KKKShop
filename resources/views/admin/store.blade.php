@@ -36,7 +36,6 @@
                         <div class="h-100 p-4 p-lg-5 d-flex flex-column justify-content-between">
                             <div>
                                 <div class="mb-4">
-                                    <div class="mb-5">
                                     <h2 class="h4 fw-bold mb-2">Thông tin sản phẩm</h2>
                                     <p class="mb-0" style="opacity: .9;">Nhập đầy đủ thông tin để tạo sản phẩm mới</p>
                                 </div>
@@ -65,8 +64,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            
                         </div>
                     </div>
 

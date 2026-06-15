@@ -38,9 +38,12 @@ class AuthController extends Controller
             'password' => Hash::make($request->input('password')),
             'phone' => $request->input('phone'),
             'address' => $request->input('address'),
+            'role' => 'user',
         ]);
         Auth::login($user);
-        return redirect("/");
+        return $user->role === 'admin' 
+            ? redirect()->route('admin.products.index') 
+            : redirect("/");
     }
     public function login(Request $request){
         $validate = $request->validate([
@@ -54,7 +57,10 @@ class AuthController extends Controller
         $credentials = $request->only('email','password');
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-            return redirect("/");
+            $user = Auth::user();
+            return $user->role === 'admin' 
+                ? redirect()->route('admin.products.index') 
+                : redirect("/");
         }
         return back()->withErrors([
             'email' => 'Sai tài khoản hoặc mật khẩu',
