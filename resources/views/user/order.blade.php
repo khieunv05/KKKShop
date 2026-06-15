@@ -75,6 +75,7 @@
                                                         <div class="d-flex justify-content-between mb-1"><span>Tình trạng</span><span class="text-uppercase">{{ $order->status }}</span></div>
                                                         <div class="d-flex justify-content-between mb-1"><span>Thanh toán</span><span>{{ $order->is_paid === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</span></div>
                                                         <div class="d-flex justify-content-between"><span>Phí ship</span><span>{{ number_format($order->shipping_fee) }} đ</span></div>
+                                                        <div class="d-flex justify-content-between"><span>Tổng tiền</span><span>{{ number_format($order->total_price) }} đ</span></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -106,8 +107,8 @@
                                                                     <div class="text-muted small">ID: {{ $product->id }}</div>
                                                                 </td>
                                                                 <td class="text-center">{{ $product->pivot->quantity }}</td>
-                                                                <td class="text-end">{{ number_format($product->price) }} đ</td>
-                                                                <td class="text-end fw-semibold">{{ number_format($product->price * $product->pivot->quantity) }} đ</td>
+                                                                <td class="text-end">{{ number_format($product->pivot->price) }} đ</td>
+                                                                <td class="text-end fw-semibold">{{ number_format($product->pivot->price * $product->pivot->quantity) }} đ</td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
