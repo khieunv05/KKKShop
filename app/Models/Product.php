@@ -23,6 +23,5 @@ class Product extends Model
         'warranty',
         'image',
         'is_active',
-        'is_builder',
     ];
 }
