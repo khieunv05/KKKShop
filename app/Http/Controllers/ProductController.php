@@ -79,7 +79,6 @@ class ProductController extends Controller
             'warranty' => $data['warranty'],
             'image' => $data['image'],
             'is_active' => true,
-            'is_builder' => false,
         ]);
 
         $product->categories()->sync($data['categories']);

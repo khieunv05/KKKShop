@@ -7,27 +7,31 @@
             <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
                 <div>
                     <p class="text-uppercase text-muted mb-1" style="letter-spacing: .18em; font-size: 12px;">Admin panel</p>
+                    <a href="{{ route('admin.revenue') }}" class="btn btn-outline-secondary">
+                        Xem doanh thu
+                    </a>
                     <h1 class="h3 mb-2" style="color: #0a3a5c;">Thêm mới sản phẩm</h1>
                     <p class="text-muted mb-0">Nhập đầy đủ thông tin để tạo sản phẩm và gắn danh mục phù hợp.</p>
                 </div>
                 <a href="{{ url('/') }}" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-arrow-left me-2"></i>Quay lại trang chủ
                 </a>
+
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success border-0 shadow-sm">{{ session('success') }}</div>
+            <div class="alert alert-success border-0 shadow-sm">{{ session('success') }}</div>
             @endif
 
             @if ($errors->any())
-                <div class="alert alert-danger border-0 shadow-sm">
-                    <div class="fw-semibold mb-2">Vui lòng kiểm tra lại các trường sau:</div>
-                    <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+            <div class="alert alert-danger border-0 shadow-sm">
+                <div class="fw-semibold mb-2">Vui lòng kiểm tra lại các trường sau:</div>
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
             @endif
 
             <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 24px;">
@@ -128,30 +132,29 @@
 
                                     <div class="row g-3">
                                         @forelse ($categories as $category)
-                                            <div class="col-12 col-md-6 col-xl-4">
-                                                <label class="category-card h-100 w-100">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="categories[]"
-                                                        value="{{ $category->id }}"
-                                                        class="category-check"
-                                                        {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}
-                                                    >
-                                                    <span class="category-card-body">
-                                                        <span class="d-flex align-items-start justify-content-between gap-3">
-                                                            <span>
-                                                                <span class="d-block fw-semibold mb-1">{{ $category->name }}</span>
-                                                                <span class="text-muted small">{{ $category->description ?? 'Không có mô tả' }}</span>
-                                                            </span>
-                                                            <span class="check-indicator"><i class="fa-solid fa-check"></i></span>
+                                        <div class="col-12 col-md-6 col-xl-4">
+                                            <label class="category-card h-100 w-100">
+                                                <input
+                                                    type="checkbox"
+                                                    name="categories[]"
+                                                    value="{{ $category->id }}"
+                                                    class="category-check"
+                                                    {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                                <span class="category-card-body">
+                                                    <span class="d-flex align-items-start justify-content-between gap-3">
+                                                        <span>
+                                                            <span class="d-block fw-semibold mb-1">{{ $category->name }}</span>
+                                                            <span class="text-muted small">{{ $category->description ?? 'Không có mô tả' }}</span>
                                                         </span>
+                                                        <span class="check-indicator"><i class="fa-solid fa-check"></i></span>
                                                     </span>
-                                                </label>
-                                            </div>
+                                                </span>
+                                            </label>
+                                        </div>
                                         @empty
-                                            <div class="col-12">
-                                                <div class="alert alert-warning mb-0">Chưa có danh mục nào trong database.</div>
-                                            </div>
+                                        <div class="col-12">
+                                            <div class="alert alert-warning mb-0">Chưa có danh mục nào trong database.</div>
+                                        </div>
                                         @endforelse
                                     </div>
                                     @error('categories')<div class="text-danger small mt-2">{{ $message }}</div>@enderror
@@ -211,7 +214,7 @@
         pointer-events: none;
     }
 
-    .category-check:checked + .category-card-body {
+    .category-check:checked+.category-card-body {
         border-color: #0a3a5c;
         box-shadow: 0 10px 24px rgba(10, 58, 92, 0.12);
         transition: none;
@@ -226,10 +229,11 @@
         justify-content: center;
         background: #eef2f7;
         color: transparent;
+        transition: none;
         flex: 0 0 auto;
     }
 
-    .category-check:checked + .category-card-body .check-indicator {
+    .category-check:checked+.category-card-body .check-indicator {
         background: #0a3a5c;
         color: #fff;
         transition: none;

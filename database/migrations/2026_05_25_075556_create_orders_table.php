@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->text('address');
             $table->integer('shipping_fee')->default(0);
+            $table->bigInteger('total_price')->unsigned();
             $table->timestamps();
         });
     }
