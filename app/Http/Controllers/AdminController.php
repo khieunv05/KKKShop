@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -14,7 +15,9 @@ class AdminController extends Controller
 
         return view('admin.store', compact('categories'));
     }
-    public function storeProduct(Request $request){
+
+    public function storeProduct(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -40,7 +43,13 @@ class AdminController extends Controller
         $product->categories()->attach($request->input('categories'));
 
         return redirect()->route('admin.add_product')->with('success', 'Sản phẩm đã được thêm thành công.');
-        
-
     }
+
+    public function viewRevenue()
+    {
+        $categories = Category::query()->orderBy('name')->get();
+
+        return view('admin.revenue', compact('categories'));
+    }
+    public function selectAllRevenue() {}
 }
