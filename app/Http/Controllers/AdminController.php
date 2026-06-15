@@ -47,23 +47,10 @@ class AdminController extends Controller
 
     public function viewRevenue()
     {
-        $categories = Category::query()->orderBy('name')->get();
+        $orders = DB::table('orders')->get();
+        $order_products = DB::table('order_product')->get();
+        $products = DB::table('products')->get();
 
-        return view('admin.revenue', compact('categories'));
-    }
-    public function selectAllRevenue()
-    {
-        $revenues = DB::table('orders')
-            ->join('order_product', 'orders.id', '=', 'order_product.order_id')
-            ->join('products', 'order_product.product_id', '=', 'products.id')
-            ->select(
-                'products.name as product_name',
-                DB::raw('SUM(order_product.quantity) as total_quantity'),
-                DB::raw('SUM(order_product.price * order_product.quantity) as total_revenue')
-            )
-            ->groupBy('products.name')
-            ->get();
-
-        return response()->json($revenues);
+        return view('admin.revenue', compact('orders', 'order_products', 'products'));
     }
 }
