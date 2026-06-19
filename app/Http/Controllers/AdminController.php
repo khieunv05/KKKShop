@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -40,7 +41,65 @@ class AdminController extends Controller
         $product->categories()->attach($request->input('categories'));
 
         return redirect()->route('admin.add_product')->with('success', 'Sản phẩm đã được thêm thành công.');
-        
+        }
+    
+        public function orders()
+        {
+        $pending = Order::with('user','products')
+        ->where('status', 'pending')
+        ->get();
 
+        $shipping = Order::with('user','products')
+        ->where('status', 'shipping')
+        ->get();
+
+        $completed = Order::with('user','products')
+        ->where('status', 'completed')
+        ->get();
+
+        $cancelled = Order::with('user','products')
+        ->where('status', 'cancelled')
+        ->get();
+
+        return view(
+        'admin.orders.index',
+        compact(
+            'pending',
+            'shipping',
+            'completed',
+            'cancelled'
+        )
+        );
     }
+
+    public function showOrder($id)
+    {
+        $order = Order::with(
+        'user',
+        'products'
+    )->findOrFail($id);
+
+    return response()->json(
+        $order
+    );
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+    $order = Order::findOrFail($id);
+
+    $order->update([
+        'status' =>
+            $request->status
+    ]);
+
+    return redirect()
+    ->back()
+    ->with(
+        'success',
+        'Cập nhật trạng thái thành công'
+    );
+    }
+
+
 }
