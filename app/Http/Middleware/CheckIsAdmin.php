@@ -19,6 +19,6 @@ class CheckIsAdmin
             return $next($request);
         }
 
-        return redirect()->route('home')->with('error', 'Bạn không có quyền truy cập vào trang này.');
+        return redirect()->route('products.index')->with('error', 'Bạn không có quyền truy cập vào trang này.');
     }
 }

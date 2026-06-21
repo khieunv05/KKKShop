@@ -81,10 +81,14 @@
                         <a href="{{ route('viewLogin') }}" class="text-white text-decoration-none">Đăng nhập</a>
                     @else
                         @if(Auth::user()->role === 'admin')
-                            <a href="{{ route('admin.add_product') }}" class="text-white text-decoration-none me-3">Quản trị</a>
+                            <a href="{{ route('admin.products.index') }}" class="text-white text-decoration-none me-3">Quản trị</a>
                             <span class="text-white category-btn">|</span>
                         @endif
+                        <span class="text-white me-3">{{ number_format(auth()->user()->current_balance) }} VND</span>
+                        <span class="text-white me-3">|</span>
                         <a href="{{ route('profile.edit') }}" class="text-white text-decoration-none">Thông tin tài khoản</a>
+                        <span class="text-white me-3"> |</span>
+                        <a href="{{ route('user.add-money') }}" class="text-white text-decoration-none">Nạp tiền</a>
                         <span class="text-white me-3"> |</span>
                          <form method="POST" action="{{ route('logout') }}" class="d-inline-block">
                              @csrf
@@ -179,5 +183,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 </html>
