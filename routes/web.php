@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CartController;
 use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
@@ -57,4 +58,43 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
 Route::get('/search', [ProductController::class, 'publicIndex'])->name('search');
+Route::middleware('auth')->group(function () {
+
+    Route::get('/cart', [CartController::class,'index'])
+        ->name('cart.index');
+
+    Route::post('/cart/add/{id}', [CartController::class,'add'])
+        ->name('cart.add');
+
+    Route::post('/cart/update/{id}', [CartController::class,'update'])
+        ->name('cart.update');
+
+    Route::delete('/cart/remove/{id}', [CartController::class,'remove'])
+        ->name('cart.remove');
+
+    Route::get('/checkout', [CartController::class,'checkoutForm'])
+        ->name('checkout.form');
+
+    Route::post('/checkout', [CartController::class,'checkout'])
+        ->name('checkout.store');
+});
+
+Route::middleware(['auth','admin'])->group(function(){
+
+    Route::get(
+        '/admin/orders',
+        [AdminController::class,'orders']
+    )->name('admin.orders');
+
+    Route::get(
+        '/admin/orders/{id}',
+        [AdminController::class,'showOrder']
+    )->name('admin.orders.show');
+
+    Route::post(
+        '/admin/orders/{id}/status',
+        [AdminController::class,'updateStatus']
+    )->name('admin.orders.status');
+
+});
 

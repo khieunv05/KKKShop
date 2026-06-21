@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -88,5 +89,65 @@ class AdminController extends Controller
             ->sum('total_price');
 
         return view('admin.revenue', compact('orders', 'order_products', 'products', 'selectedMonth', 'monthlyRevenue'));
+        }
+    
+        public function orders()
+        {
+        $pending = Order::with('user','products')
+        ->where('status', 'pending')
+        ->get();
+
+        $shipping = Order::with('user','products')
+        ->where('status', 'shipping')
+        ->get();
+
+        $completed = Order::with('user','products')
+        ->where('status', 'completed')
+        ->get();
+
+        $cancelled = Order::with('user','products')
+        ->where('status', 'cancelled')
+        ->get();
+
+        return view(
+        'admin.orders.index',
+        compact(
+            'pending',
+            'shipping',
+            'completed',
+            'cancelled'
+        )
+        );
     }
+
+    public function showOrder($id)
+    {
+        $order = Order::with(
+        'user',
+        'products'
+    )->findOrFail($id);
+
+    return response()->json(
+        $order
+    );
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+    $order = Order::findOrFail($id);
+
+    $order->update([
+        'status' =>
+            $request->status
+    ]);
+
+    return redirect()
+    ->back()
+    ->with(
+        'success',
+        'Cập nhật trạng thái thành công'
+    );
+    }
+
+
 }
