@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -53,6 +54,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/admin/orders/{id}/cancel', [OrderController::class, 'cancelByAdmin'])->name('admin.orders.cancel');
 });
 
+Route::get('/api/suggestions', [ProductController::class, 'suggestions'])->name('api.suggestions');
 Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
 Route::get('/search', [ProductController::class, 'publicIndex'])->name('search');
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
 

@@ -15,216 +15,85 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $admin = User::updateOrCreate(
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        DB::table('order_product')->delete();
+        DB::table('category_product')->delete();
+        DB::table('orders')->delete();
+        DB::table('categories')->delete();
+        DB::table('products')->delete();
+        DB::statement('ALTER TABLE categories AUTO_INCREMENT = 1');
+        DB::statement('ALTER TABLE products AUTO_INCREMENT = 1');
+        DB::statement('ALTER TABLE orders AUTO_INCREMENT = 1');
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
+        User::updateOrCreate(
             ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'phone' => '0900000000',
-                'address' => '123 Đường ABC',
-                'city' => 'HN',
-                'role' => 'admin',
-            ]
+            ['name' => 'Admin User', 'password' => Hash::make('password'), 'phone' => '0900000000', 'address' => '123 Đường ABC', 'city' => 'HN', 'role' => 'admin']
         );
         $user = User::updateOrCreate(
             ['email' => 'test@example.com'],
-            [
-                'name' => 'Test User',
-                'password' => Hash::make('password'),
-                'phone' => '0900000000',
-                'address' => '123 Đường ABC',
-                'city' => 'HN',
-                'role' => 'user',
-            ]
+            ['name' => 'Test User', 'password' => Hash::make('password'), 'phone' => '0900000000', 'address' => '123 Đường ABC', 'city' => 'HN', 'role' => 'user']
         );
 
-        $categories = collect([
-            [
-                'name' => 'Gaming PC',
-                'description' => 'Bộ máy tính hoàn chỉnh phục vụ chơi game.',
-            ],
-            [
-                'name' => 'CPU',
-                'description' => 'Bộ vi xử lý cho máy tính.',
-            ],
-            [
-                'name' => 'Mainboard',
-                'description' => 'Bo mạch chủ và linh kiện liên quan.',
-            ],
-            [
-                'name' => 'RAM',
-                'description' => 'Bộ nhớ tạm cho hệ thống.',
-            ],
-            [
-                'name' => 'SSD',
-                'description' => 'Ổ lưu trữ tốc độ cao.',
-            ],
-        ]);
-
-        foreach ($categories as $categoryData) {
-            DB::table('categories')->updateOrInsert(
-                ['name' => $categoryData['name']],
-                ['description' => $categoryData['description']]
-            );
+        $categories = collect();
+        foreach ([
+            'PC Gaming' => 'Máy tính chơi game hiệu năng cao',
+            'PC Workstation' => 'Máy tính đồ họa và làm việc chuyên nghiệp',
+            'CPU' => 'Bộ vi xử lý',
+            'Mainboard' => 'Bo mạch chủ',
+            'RAM' => 'Bộ nhớ trong',
+            'SSD' => 'Ổ cứng thể rắn',
+        ] as $name => $desc) {
+            $categories->put($name, Category::updateOrCreate(['name' => $name], ['description' => $desc]));
         }
 
-        $categoryModels = Category::query()->get()->keyBy('name');
-
-        $products = collect([
-            [
-                'name' => 'PC Gaming Ryzen 5 5600 + RTX 4060',
-                'description' => 'Bộ PC chơi game tầm trung, phù hợp 1080p/2K.',
-                'price' => 22990000,
-                'old_price' => 24990000,
-                'stock' => 8,
-                'warranty' => 36,
-                'image' => null,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'CPU Intel Core i7-14700K',
-                'description' => 'CPU hiệu năng cao cho gaming và làm việc đa nhiệm.',
-                'price' => 11290000,
-                'old_price' => null,
-                'stock' => 15,
-                'warranty' => 36,
-                'image' => null,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Mainboard B760M DDR5',
-                'description' => 'Bo mạch chủ chuẩn mATX hỗ trợ DDR5.',
-                'price' => 3890000,
-                'old_price' => 4290000,
-                'stock' => 20,
-                'warranty' => 24,
-                'image' => null,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'RAM 32GB DDR5 6000MHz',
-                'description' => 'Bộ nhớ dung lượng lớn cho workstation và game.',
-                'price' => 2790000,
-                'old_price' => null,
-                'stock' => 30,
-                'warranty' => 36,
-                'image' => null,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'SSD NVMe 1TB Gen4',
-                'description' => 'Ổ cứng tốc độ cao cho hệ điều hành và game.',
-                'price' => 1890000,
-                'old_price' => 2190000,
-                'stock' => 25,
-                'warranty' => 36,
-                'image' => null,
-                'is_active' => true,
-            ],
-        ]);
-
-        $productModels = $products->map(function (array $productData) {
-            return Product::updateOrCreate(
-                ['name' => $productData['name']],
-                $productData
-            );
-        })->keyBy('name');
-
-        $categoryAssignments = [
-            'PC Gaming Ryzen 5 5600 + RTX 4060' => ['Gaming PC'],
-            'CPU Intel Core i7-14700K' => ['CPU'],
-            'Mainboard B760M DDR5' => ['Mainboard'],
-            'RAM 32GB DDR5 6000MHz' => ['RAM'],
-            'SSD NVMe 1TB Gen4' => ['SSD'],
+        $products = collect();
+        $productData = [
+            ['PC Gaming Ryzen 5 5600 + RTX 4060', 22990000, 24990000, 8, 36, ['PC Gaming']],
+            ['PC Gaming Intel i5 + RTX 4070', 28990000, null, 5, 36, ['PC Gaming']],
+            ['PC Workstation Intel i7 + 32GB RAM', 35990000, 38990000, 3, 36, ['PC Workstation']],
+            ['CPU Intel Core i7-14700K', 11290000, null, 15, 36, ['CPU']],
+            ['CPU AMD Ryzen 7 7800X3D', 14290000, null, 10, 36, ['CPU']],
+            ['Mainboard B760M DDR5', 3890000, 4290000, 20, 24, ['Mainboard']],
+            ['Mainboard X670E AORUS', 8990000, null, 7, 24, ['Mainboard']],
+            ['RAM 32GB DDR5 6000MHz', 2790000, null, 30, 36, ['RAM']],
+            ['RAM 16GB DDR4 3200MHz', 1190000, 1390000, 40, 36, ['RAM']],
+            ['SSD NVMe 1TB Gen4', 1890000, 2190000, 25, 36, ['SSD']],
+            ['SSD SATA 480GB', 690000, 890000, 35, 24, ['SSD']],
         ];
 
-        foreach ($categoryAssignments as $productName => $categoryNames) {
-            $product = $productModels->get($productName);
-
-            if (! $product) {
-                continue;
-            }
-
-            foreach ($categoryNames as $categoryName) {
-                $categoryModels->get($categoryName)?->products()->syncWithoutDetaching([$product->id]);
+        foreach ($productData as [$name, $price, $oldPrice, $stock, $warranty, $catNames]) {
+            $product = Product::updateOrCreate(
+                ['name' => $name],
+                ['description' => $name, 'price' => $price, 'old_price' => $oldPrice, 'stock' => $stock, 'warranty' => $warranty, 'image' => null, 'is_active' => true]
+            );
+            $products->put($name, $product);
+            foreach ($catNames as $catName) {
+                $categories->get($catName)?->products()->syncWithoutDetaching([$product->id]);
             }
         }
 
-        $orders = collect([
-            [
-                'address' => '123 Đường ABC, Hà Nội',
-                'is_paid' => 'paid',
-                'status' => 'completed',
-                'shipping_fee' => 30000,
-                'items' => [
-                    ['product' => 'PC Gaming Ryzen 5 5600 + RTX 4060', 'quantity' => 1],
-                    ['product' => 'SSD NVMe 1TB Gen4', 'quantity' => 2],
-                ],
-            ],
-            [
-                'address' => '45 Nguyễn Huệ, Hồ Chí Minh',
-                'is_paid' => 'unpaid',
-                'status' => 'pending',
-                'shipping_fee' => 45000,
-                'items' => [
-                    ['product' => 'CPU Intel Core i7-14700K', 'quantity' => 1],
-                    ['product' => 'Mainboard B760M DDR5', 'quantity' => 1],
-                    ['product' => 'RAM 32GB DDR5 6000MHz', 'quantity' => 2],
-                ],
-            ],
-            [
-                'address' => '88 Trần Phú, Đà Nẵng',
-                'is_paid' => 'paid',
-                'status' => 'shipping',
-                'shipping_fee' => 25000,
-                'items' => [
-                    ['product' => 'SSD NVMe 1TB Gen4', 'quantity' => 1],
-                    ['product' => 'RAM 32GB DDR5 6000MHz', 'quantity' => 1],
-                ],
-            ],
-        ]);
+        $orders = [
+            ['123 Đường ABC, Hà Nội', 'paid', 'completed', 30000, ['PC Gaming Ryzen 5 5600 + RTX 4060' => 1, 'SSD NVMe 1TB Gen4' => 2]],
+            ['45 Nguyễn Huệ, Hồ Chí Minh', 'unpaid', 'pending', 45000, ['CPU Intel Core i7-14700K' => 1, 'Mainboard B760M DDR5' => 1, 'RAM 32GB DDR5 6000MHz' => 2]],
+            ['88 Trần Phú, Đà Nẵng', 'paid', 'shipping', 25000, ['SSD NVMe 1TB Gen4' => 1, 'RAM 32GB DDR5 6000MHz' => 1]],
+        ];
 
-        foreach ($orders as $orderData) {
+        foreach ($orders as [$address, $isPaid, $status, $shippingFee, $items]) {
             $syncData = [];
             $totalPrice = 0;
-
-            foreach ($orderData['items'] as $item) {
-                $product = $productModels->firstWhere('name', $item['product']);
-
-                if (! $product) {
-                    continue;
-                }
-
-                $quantity = (int) $item['quantity'];
-                $price = (int) $product->price;
-
-                $syncData[$product->id] = [
-                    'quantity' => $quantity,
-                    'price' => $price,
-                ];
-
-                $totalPrice += $price * $quantity;
+            foreach ($items as $productName => $quantity) {
+                $product = $products->get($productName);
+                if (!$product) continue;
+                $syncData[$product->id] = ['quantity' => $quantity, 'price' => $product->price];
+                $totalPrice += $product->price * $quantity;
             }
-
-            $order = Order::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'address' => $orderData['address'],
-                ],
-                [
-                    'is_paid' => $orderData['is_paid'],
-                    'status' => $orderData['status'],
-                    'shipping_fee' => $orderData['shipping_fee'],
-                    'total_price' => $totalPrice,
-                ]
-            );
-
-            $order->products()->sync($syncData);
+            Order::updateOrCreate(
+                ['user_id' => $user->id, 'address' => $address],
+                ['is_paid' => $isPaid, 'status' => $status, 'shipping_fee' => $shippingFee, 'total_price' => $totalPrice]
+            )->products()->sync($syncData);
         }
     }
 }
