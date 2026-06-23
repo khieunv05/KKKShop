@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -37,51 +36,63 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Test User', 'password' => Hash::make('password'), 'phone' => '0900000000', 'address' => '123 Đường ABC', 'city' => 'HN', 'role' => 'user']
         );
 
-        $categories = collect();
-        foreach ([
-            'PC Gaming' => 'Máy tính chơi game hiệu năng cao',
-            'PC Workstation' => 'Máy tính đồ họa và làm việc chuyên nghiệp',
-            'CPU' => 'Bộ vi xử lý',
-            'Mainboard' => 'Bo mạch chủ',
-            'RAM' => 'Bộ nhớ trong',
-            'SSD' => 'Ổ cứng thể rắn',
-        ] as $name => $desc) {
-            $categories->put($name, Category::updateOrCreate(['name' => $name], ['description' => $desc]));
+        $categoryData = [
+            'Laptop' => 'Laptop văn phòng, học tập và gaming',
+            'PC Gaming' => 'Bộ PC chơi game hiệu năng cao',
+            'Màn hình' => 'Màn hình cho làm việc và giải trí',
+            'Linh kiện' => 'Linh kiện nâng cấp máy tính',
+            'Thiết bị ngoại vi' => 'Chuột, bàn phím, tai nghe và phụ kiện',
+            'Lưu trữ' => 'SSD, HDD và thiết bị lưu trữ',
+        ];
+
+        foreach ($categoryData as $name => $description) {
+            DB::table('categories')->updateOrInsert(
+                ['name' => $name],
+                ['description' => $description]
+            );
         }
+
+        $categories = DB::table('categories')->pluck('id', 'name');
 
         $products = collect();
         $productData = [
-            ['PC Gaming Ryzen 5 5600 + RTX 4060', 22990000, 24990000, 8, 36, ['PC Gaming']],
-            ['PC Gaming Intel i5 + RTX 4070', 28990000, null, 5, 36, ['PC Gaming']],
-            ['PC Workstation Intel i7 + 32GB RAM', 35990000, 38990000, 3, 36, ['PC Workstation']],
-            ['CPU Intel Core i7-14700K', 11290000, null, 15, 36, ['CPU']],
-            ['CPU AMD Ryzen 7 7800X3D', 14290000, null, 10, 36, ['CPU']],
-            ['Mainboard B760M DDR5', 3890000, 4290000, 20, 24, ['Mainboard']],
-            ['Mainboard X670E AORUS', 8990000, null, 7, 24, ['Mainboard']],
-            ['RAM 32GB DDR5 6000MHz', 2790000, null, 30, 36, ['RAM']],
-            ['RAM 16GB DDR4 3200MHz', 1190000, 1390000, 40, 36, ['RAM']],
-            ['SSD NVMe 1TB Gen4', 1890000, 2190000, 25, 36, ['SSD']],
-            ['SSD SATA 480GB', 690000, 890000, 35, 24, ['SSD']],
+            ['Laptop ASUS Vivobook 14 OLED', 'Laptop mỏng nhẹ, màn hình OLED, phù hợp học tập và làm việc', 18990000, 20990000, 12, 24, ['Laptop']],
+            ['Laptop Dell Inspiron 15', 'Laptop văn phòng bền bỉ, hiệu năng ổn định', 16990000, null, 10, 24, ['Laptop']],
+            ['PC Gaming Ryzen 5 7500F + RTX 4060', 'Bộ PC gaming tầm trung cho 1080p và 2K', 25990000, 27990000, 6, 36, ['PC Gaming']],
+            ['PC Gaming Intel Core i5 + RTX 4070', 'Bộ máy chiến game và streaming mượt mà', 32990000, null, 4, 36, ['PC Gaming']],
+            ['Màn hình LG 27inch IPS 2K 75Hz', 'Màn hình 27 inch hiển thị sắc nét, màu sắc chuẩn', 4990000, 5590000, 18, 24, ['Màn hình']],
+            ['Màn hình Samsung 24inch Full HD 100Hz', 'Màn hình gaming và làm việc giá tốt', 3290000, null, 22, 24, ['Màn hình']],
+            ['CPU Intel Core i7-14700K', 'CPU hiệu năng cao cho gaming và đồ họa', 11290000, null, 8, 36, ['Linh kiện']],
+            ['CPU AMD Ryzen 7 7800X3D', 'CPU tối ưu cho chơi game, hiệu suất mạnh', 14290000, 14990000, 7, 36, ['Linh kiện']],
+            ['RAM 32GB DDR5 6000MHz', 'Bộ nhớ RAM dung lượng lớn cho đa nhiệm', 2790000, null, 30, 36, ['Linh kiện']],
+            ['Mainboard B760M DDR5', 'Bo mạch chủ hỗ trợ CPU Intel thế hệ mới', 3890000, 4290000, 16, 24, ['Linh kiện']],
+            ['SSD NVMe 1TB Gen4', 'Ổ cứng tốc độ cao cho hệ điều hành và game', 1890000, 2190000, 28, 36, ['Lưu trữ']],
+            ['Chuột gaming Logitech G102', 'Chuột gaming phổ biến, độ nhạy tốt', 490000, 590000, 45, 12, ['Thiết bị ngoại vi']],
+            ['Bàn phím cơ Akko 3087', 'Bàn phím cơ layout gọn, switch êm', 1490000, 1690000, 20, 12, ['Thiết bị ngoại vi']],
+            ['Tai nghe gaming HyperX Cloud Stinger', 'Tai nghe gaming đeo thoải mái, mic rõ', 1190000, 1390000, 14, 12, ['Thiết bị ngoại vi']],
         ];
 
-        foreach ($productData as [$name, $price, $oldPrice, $stock, $warranty, $catNames]) {
+        foreach ($productData as [$name, $description, $price, $oldPrice, $stock, $warranty, $catNames]) {
             $product = Product::updateOrCreate(
                 ['name' => $name],
-                ['description' => $name, 'price' => $price, 'old_price' => $oldPrice, 'stock' => $stock, 'warranty' => $warranty, 'image' => null, 'is_active' => true]
+                ['description' => $description, 'price' => $price, 'old_price' => $oldPrice, 'stock' => $stock, 'warranty' => $warranty, 'image' => null, 'is_active' => true]
             );
             $products->put($name, $product);
             foreach ($catNames as $catName) {
-                $categories->get($catName)?->products()->syncWithoutDetaching([$product->id]);
+                $categoryId = $categories->get($catName);
+                if ($categoryId) {
+                    $product->categories()->syncWithoutDetaching([$categoryId]);
+                }
             }
         }
 
         $orders = [
-            ['123 Đường ABC, Hà Nội', 'paid', 'completed', 30000, ['PC Gaming Ryzen 5 5600 + RTX 4060' => 1, 'SSD NVMe 1TB Gen4' => 2]],
-            ['45 Nguyễn Huệ, Hồ Chí Minh', 'unpaid', 'pending', 45000, ['CPU Intel Core i7-14700K' => 1, 'Mainboard B760M DDR5' => 1, 'RAM 32GB DDR5 6000MHz' => 2]],
-            ['88 Trần Phú, Đà Nẵng', 'paid', 'shipping', 25000, ['SSD NVMe 1TB Gen4' => 1, 'RAM 32GB DDR5 6000MHz' => 1]],
+            ['Nguyễn Văn A', '0901111222', '123 Đường ABC, Hà Nội', 'cod', 'paid', 'completed', 30000, ['PC Gaming Ryzen 5 7500F + RTX 4060' => 1, 'Chuột gaming Logitech G102' => 2]],
+            ['Trần Thị B', '0902222333', '45 Nguyễn Huệ, Hồ Chí Minh', 'bank_transfer', 'unpaid', 'pending', 45000, ['Laptop ASUS Vivobook 14 OLED' => 1, 'Tai nghe gaming HyperX Cloud Stinger' => 1]],
+            ['Lê Văn C', '0903333444', '88 Trần Phú, Đà Nẵng', 'momo', 'paid', 'shipping', 25000, ['Màn hình LG 27inch IPS 2K 75Hz' => 1, 'SSD NVMe 1TB Gen4' => 1]],
         ];
 
-        foreach ($orders as [$address, $isPaid, $status, $shippingFee, $items]) {
+        foreach ($orders as [$receiverName, $phone, $address, $paymentMethod, $isPaid, $status, $shippingFee, $items]) {
             $syncData = [];
             $totalPrice = 0;
             foreach ($items as $productName => $quantity) {
@@ -92,7 +103,15 @@ class DatabaseSeeder extends Seeder
             }
             Order::updateOrCreate(
                 ['user_id' => $user->id, 'address' => $address],
-                ['is_paid' => $isPaid, 'status' => $status, 'shipping_fee' => $shippingFee, 'total_price' => $totalPrice]
+                [
+                    'receiver_name' => $receiverName,
+                    'phone' => $phone,
+                    'payment_method' => $paymentMethod,
+                    'is_paid' => $isPaid,
+                    'status' => $status,
+                    'shipping_fee' => $shippingFee,
+                    'total_price' => $totalPrice,
+                ]
             )->products()->sync($syncData);
         }
     }
