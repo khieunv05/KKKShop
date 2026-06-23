@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [UserController::class, 'viewOrders'])->name('orders.index');
     Route::get('/add-money', [UserController::class, 'viewAddMoneyForm'])->name('user.add-money');
     Route::post('/add-money', [UserController::class, 'addMoney'])->name('user.add-money.post');
+    Route::patch('/orders/{order}/confirm', [OrderController::class, 'confirmByUser'])->name('orders.confirm');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

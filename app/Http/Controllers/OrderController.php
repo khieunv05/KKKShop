@@ -37,4 +37,15 @@ class OrderController extends Controller
 
         return back()->with('success', 'Đơn hàng đã bị hủy và kho được hoàn lại.');
     }
+    public function confirmByUser(Order $order){
+        if ($order->status !== 'cancelled') {
+            $order->update([
+                'status' => 'completed',
+                'is_paid' => 'paid',
+            ]);
+            return back()->with('success', 'Đơn hàng đã được xác nhận.');
+        } else {
+            return back()->with('error', 'Đơn hàng đã bị hủy và không thể xác nhận.');
+        }
+    }
 }
