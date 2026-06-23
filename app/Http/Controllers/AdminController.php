@@ -54,12 +54,14 @@ class AdminController extends Controller
         $endDate = (clone $startDate)->endOfMonth();
 
         $orders = DB::table('orders')
+            ->where('is_paid', 'paid')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
         $order_products = DB::table('order_product')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
             ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('orders.is_paid', 'paid')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
                 'order_product.order_id',
@@ -73,6 +75,7 @@ class AdminController extends Controller
         $products = DB::table('order_product')
             ->join('orders', 'order_product.order_id', '=', 'orders.id')
             ->join('products', 'order_product.product_id', '=', 'products.id')
+            ->where('orders.is_paid', 'paid')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
             ->select(
                 'products.id',
@@ -85,6 +88,7 @@ class AdminController extends Controller
             ->get();
 
         $monthlyRevenue = DB::table('orders')
+            ->where('is_paid', 'paid')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->sum('total_price');
 
