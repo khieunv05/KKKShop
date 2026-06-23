@@ -29,6 +29,10 @@ Route::middleware('auth')->group(function () {
         return view('auth.editPassword');
     })->name('profile.password.edit');
     Route::get('/orders', [UserController::class, 'viewOrders'])->name('orders.index');
+    Route::patch('/orders/{order}/confirm', [OrderController::class, 'confirmByUser'])->name('orders.confirm');
+    Route::post('/orders/{id}/pay', [OrderController::class, 'payByBalance'])->name('orders.pay');
+    Route::get('/add-money', [UserController::class, 'viewAddMoneyForm'])->name('user.add-money');
+    Route::post('/add-money', [UserController::class, 'addMoney'])->name('user.add-money.post');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -50,6 +54,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
     Route::delete('/admin/categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
+    Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    Route::get('/admin/orders/{id}', [AdminController::class, 'showOrder'])->name('admin.orders.show');
+    Route::post('/admin/orders/{id}/status', [AdminController::class, 'updateStatus'])->name('admin.orders.status');
     Route::patch('/admin/orders/{id}/paid', [OrderController::class, 'markPaid'])->name('admin.orders.paid');
     Route::patch('/admin/orders/{id}/cancel', [OrderController::class, 'cancelByAdmin'])->name('admin.orders.cancel');
 });
@@ -58,8 +65,12 @@ Route::get('/api/suggestions', [ProductController::class, 'suggestions'])->name(
 Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.index');
 Route::get('/search', [ProductController::class, 'publicIndex'])->name('search');
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::get('/checkout', [CartController::class, 'checkoutForm'])->name('checkout.form');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('checkout.store');
+});
 

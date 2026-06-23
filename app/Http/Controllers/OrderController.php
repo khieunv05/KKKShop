@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use App\Services\InventoryService;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -36,5 +38,47 @@ class OrderController extends Controller
         ]);
 
         return back()->with('success', 'Đơn hàng đã bị hủy và kho được hoàn lại.');
+    }
+
+    public function confirmByUser(Order $order)
+    {
+        if ($order->status !== 'cancelled') {
+            $order->update([
+                'status' => 'completed',
+                'is_paid' => 'paid',
+            ]);
+            return back()->with('success', 'Đơn hàng đã được xác nhận.');
+        }
+        return back()->with('error', 'Đơn hàng đã bị hủy và không thể xác nhận.');
+    }
+
+    public function payByBalance(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $user = auth()->user();
+
+        if ($order->user_id !== $user->id) {
+            return back()->with('error', 'Bạn không có quyền thanh toán đơn này.');
+        }
+
+        if ($order->is_paid === 'paid') {
+            return back()->with('error', 'Đơn hàng đã được thanh toán.');
+        }
+
+        $totalDue = $order->total_price + $order->shipping_fee;
+
+        if ($user->current_balance < $totalDue) {
+            return redirect()->route('user.add-money', ['order_id' => $order->id])
+                ->with('error', 'Số dư không đủ. Vui lòng nạp thêm.');
+        }
+
+        $user->current_balance -= $totalDue;
+        $user->save();
+
+        $order->update([
+            'is_paid' => 'paid',
+        ]);
+
+        return redirect()->route('orders.index')->with('success', 'Thanh toán đơn hàng #' . $order->id . ' thành công!');
     }
 }

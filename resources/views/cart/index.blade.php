@@ -87,6 +87,7 @@
 
         <div class="d-flex justify-content-between mt-3">
             <a href="{{ route('products.index') }}" class="btn btn-outline-primary">Tiếp tục mua sắm</a>
+            <a href="{{ route('checkout.form') }}" class="btn btn-success">Thanh toán</a>
         </div>
     @endif
 </div>
