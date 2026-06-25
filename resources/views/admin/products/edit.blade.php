@@ -6,14 +6,12 @@
         <div class="col-12 col-xl-10">
             <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
                 <div>
-
-                    <h1 class="h3 mb-2" style="color: #0a3a5c;">Thêm mới sản phẩm</h1>
-                    <p class="text-muted mb-0">Nhập đầy đủ thông tin để tạo sản phẩm và gắn danh mục phù hợp.</p>
+                    <h1 class="h3 mb-2" style="color: #0a3a5c;">Chỉnh sửa sản phẩm</h1>
+                    <p class="text-muted mb-0">Cập nhật thông tin sản phẩm và gắn danh mục phù hợp.</p>
                 </div>
                 <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">
                     <i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách sản phẩm
                 </a>
-
             </div>
 
             @if (session('success'))
@@ -37,8 +35,8 @@
                         <div class="h-100 p-4 p-lg-5 d-flex flex-column justify-content-between">
                             <div>
                                 <div class="mb-5">
-                                    <h2 class="h4 fw-bold mb-2">Thông tin sản phẩm</h2>
-                                    <p class="mb-0" style="opacity: .9;">Nhập đầy đủ thông tin để tạo sản phẩm mới</p>
+                                    <h2 class="h4 fw-bold mb-2">Chỉnh sửa sản phẩm</h2>
+                                    <p class="mb-0" style="opacity: .9;">Cập nhật thông tin cần thiết cho sản phẩm</p>
                                 </div>
 
                                 <div class="d-grid gap-3">
@@ -53,7 +51,7 @@
                                         <div class="icon-box"><i class="fa-solid fa-image"></i></div>
                                         <div>
                                             <div class="fw-semibold">Ảnh đại diện</div>
-                                            <small style="opacity:.85;">Hỗ trợ jpeg, png, jpg, gif</small>
+                                            <small style="opacity:.85;">Hỗ trợ jpeg, png, jpg, gif, webp</small>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center gap-3">
@@ -70,18 +68,19 @@
 
                     <div class="col-lg-8 bg-white">
                         <div class="p-4 p-lg-5">
-                            <form action="{{ route('admin.store_product') }}" method="POST" enctype="multipart/form-data" class="row g-4">
+                            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="row g-4">
                                 @csrf
+                                @method('PUT')
 
                                 <div class="col-12">
                                     <label class="form-label fw-semibold">Tên sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" value="{{ old('name') }}" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="Ví dụ: PC Gaming Ryzen 5 5600 + RTX 4060">
+                                    <input type="text" name="name" value="{{ old('name', $product->name) }}" class="form-control form-control-lg @error('name') is-invalid @enderror" placeholder="Ví dụ: PC Gaming Ryzen 5 5600 + RTX 4060">
                                     @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label fw-semibold">Mô tả</label>
-                                    <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="Mô tả ngắn gọn về sản phẩm">{{ old('description') }}</textarea>
+                                    <label class="form-label fw-semibold">Mô tả chi tiết</label>
+                                    <textarea name="description" rows="4" class="form-control @error('description') is-invalid @enderror" placeholder="Mô tả chi tiết về sản phẩm">{{ old('description', $product->description) }}</textarea>
                                     @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
@@ -89,7 +88,7 @@
                                     <label class="form-label fw-semibold">Giá bán <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text">VNĐ</span>
-                                        <input type="number" name="price" value="{{ old('price') }}" min="0" class="form-control @error('price') is-invalid @enderror" placeholder="0">
+                                        <input type="number" name="price" value="{{ old('price', $product->price) }}" min="0" class="form-control @error('price') is-invalid @enderror" placeholder="0">
                                         @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
@@ -98,27 +97,34 @@
                                     <label class="form-label fw-semibold">Giá cũ</label>
                                     <div class="input-group">
                                         <span class="input-group-text">VNĐ</span>
-                                        <input type="number" name="old_price" value="{{ old('old_price') }}" min="0" class="form-control @error('old_price') is-invalid @enderror" placeholder="0">
+                                        <input type="number" name="old_price" value="{{ old('old_price', $product->old_price) }}" min="0" class="form-control @error('old_price') is-invalid @enderror" placeholder="0">
                                         @error('old_price')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold">Tồn kho <span class="text-danger">*</span></label>
-                                    <input type="number" name="stock" value="{{ old('stock') }}" min="0" class="form-control @error('stock') is-invalid @enderror" placeholder="0">
+                                    <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="form-control @error('stock') is-invalid @enderror" placeholder="0">
                                     @error('stock')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold">Bảo hành (tháng) <span class="text-danger">*</span></label>
-                                    <input type="number" name="warranty" value="{{ old('warranty') }}" min="1" class="form-control @error('warranty') is-invalid @enderror" placeholder="12">
+                                    <input type="number" name="warranty" value="{{ old('warranty', $product->warranty) }}" min="1" class="form-control @error('warranty') is-invalid @enderror" placeholder="12">
                                     @error('warranty')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="form-label fw-semibold">Ảnh sản phẩm <span class="text-danger">*</span></label>
-                                    <input type="file" name="image" accept="image/*" class="form-control @error('image') is-invalid @enderror">
+                                    <label class="form-label fw-semibold">Ảnh sản phẩm</label>
+                                    <input type="file" id="image_input" name="image" accept="image/*" class="form-control @error('image') is-invalid @enderror">
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    <div class="mt-2">
+                                        @if($product->image)
+                                        <img id="image_preview" src="{{ asset('storage/' . $product->image) }}" alt="preview" style="max-width:180px; max-height:180px; object-fit:cover; border-radius:12px;">
+                                        @else
+                                        <img id="image_preview" src="" alt="preview" style="display:none; max-width:180px; max-height:180px; object-fit:cover; border-radius:12px;">
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <div class="col-12">
@@ -136,7 +142,7 @@
                                                     name="categories[]"
                                                     value="{{ $category->id }}"
                                                     class="category-check"
-                                                    {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}>
+                                                    {{ in_array($category->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
                                                 <span class="category-card-body">
                                                     <span class="d-flex align-items-start justify-content-between gap-3">
                                                         <span>
@@ -159,9 +165,9 @@
 
                                 <div class="col-12 d-flex flex-wrap gap-3 pt-2">
                                     <button type="submit" class="btn btn-primary btn-lg px-4" style="background-color:#0a3a5c; border-color:#0a3a5c;">
-                                        <i class="fa-solid fa-plus me-2"></i>Thêm sản phẩm
+                                        <i class="fa-solid fa-floppy-disk me-2"></i>Lưu thay đổi
                                     </button>
-                                    <button type="reset" class="btn btn-outline-secondary btn-lg px-4">Nhập lại</button>
+                                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary btn-lg px-4">Hủy</a>
                                 </div>
                             </form>
                         </div>
@@ -236,4 +242,20 @@
         transition: none;
     }
 </style>
+@endsection
+
+@section('scripts')
+<script>
+    const imageInput = document.getElementById('image_input');
+    const preview = document.getElementById('image_preview');
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'inline-block';
+        });
+    }
+</script>
 @endsection
