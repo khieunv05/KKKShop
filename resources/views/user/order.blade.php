@@ -64,7 +64,8 @@
                                     <div
                                         class="w-100 d-flex flex-wrap justify-content-between align-items-center gap-1 gap-sm-2">
                                         <span class="fw-bold">Đơn #{{ $order->id }}</span>
-                                        <span class="text-muted small">{{ $order->created_at?->format('d/m/Y H:i') }}</span>
+                                        <span class="text-muted small">{{ $order->created_at?->format('d/m/Y H:i')
+                                            }}</span>
                                         <span class="badge bg-secondary text-uppercase">{{ $order->status }}</span>
                                         <span
                                             class="badge {{ $order->is_paid === 'paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{
@@ -106,7 +107,7 @@
                                                     @csrf
                                                     @method('PATCH')
                                                     <button type="submit" class="btn btn-success mt-3 w-100"
-                                                        style="{{ $order->is_paid!== 'paid' ? 'display:block;' : 'display:none;' }}">
+                                                        style="{{ $order->status!== 'completed' ? 'display:block;' : 'display:none;' }}">
 
                                                         Xác nhận đã nhận hàng
                                                     </button>
@@ -129,7 +130,8 @@
                                             <tbody>
                                                 @foreach($order->products as $product)
                                                 @php
-                                                $imageUrl = $product->image_url ?? 'https://placehold.co/60x60?text=No+Img';
+                                                $imageUrl = $product->image_url ??
+                                                'https://placehold.co/60x60?text=No+Img';
                                                 @endphp
                                                 <tr>
                                                     <td>
