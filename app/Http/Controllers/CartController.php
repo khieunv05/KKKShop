@@ -141,10 +141,15 @@ class CartController extends Controller
             }
         });
 
-        if ($request->payment_method === 'qr') {
-            return redirect()->route('user.add-money', ['order_id' => $order->id])->with('success', 'Đặt hàng thành công! Vui lòng nạp tiền qua QR để thanh toán đơn hàng #' . $order->id);
+        if ($request->payment_method === 'cod') {
+            foreach ($cart as $id => $item) {
+                Product::whereKey($id)->decrement('stock', $item['quantity']);
+            }
+            session()->forget('cart');
+
+            return redirect()->route('orders.index')->with('success', 'Đặt hàng thành công!');
         }
 
-        return redirect()->route('orders.index')->with('success', 'Đặt hàng thành công!');
+        return redirect()->route('user.add-money', ['order_id' => $order->id])->with('success', 'Đặt hàng thành công! Vui lòng nạp tiền qua QR để thanh toán đơn hàng #' . $order->id);
     }
 }
