@@ -119,8 +119,8 @@
                                     <input type="file" id="image_input" name="image" accept="image/*" class="form-control @error('image') is-invalid @enderror">
                                     @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     <div class="mt-2">
-                                        @if($product->image)
-                                        <img id="image_preview" src="{{ asset('storage/' . $product->image) }}" alt="preview" style="max-width:180px; max-height:180px; object-fit:cover; border-radius:12px;">
+                                        @if($product->image_url)
+                                        <img id="image_preview" src="{{ $product->image_url }}" alt="preview" style="max-width:180px; max-height:180px; object-fit:cover; border-radius:12px;">
                                         @else
                                         <img id="image_preview" src="" alt="preview" style="display:none; max-width:180px; max-height:180px; object-fit:cover; border-radius:12px;">
                                         @endif

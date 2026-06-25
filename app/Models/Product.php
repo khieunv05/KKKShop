@@ -21,4 +21,13 @@ class Product extends Model
         'image',
         'is_active',
     ];
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return null;
+    }
 }

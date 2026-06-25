@@ -122,6 +122,11 @@ class AdminController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $order = Order::findOrFail($id);
+
+        if ($request->status === 'cancelled') {
+            return back()->with('error', 'Vui lòng dùng nút "Hủy đơn" để hủy đơn hàng (có hoàn kho/tiền).');
+        }
+
         $order->update(['status' => $request->status]);
         return redirect()->back()->with('success', 'Cập nhật trạng thái thành công');
     }

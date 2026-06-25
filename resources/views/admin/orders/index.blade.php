@@ -1,8 +1,8 @@
 @extends('master')
 
 @section('content')
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container mt-4 admin-orders-page">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h2 class="mb-0">Quản lý đơn hàng</h2>
         <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Quay lại</a>
     </div>
@@ -33,46 +33,62 @@
             @if($orders->isEmpty())
             <div class="alert alert-light border">Không có đơn hàng nào.</div>
             @else
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Khách hàng</th>
-                        <th>SĐT</th>
-                        <th>Địa chỉ</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($orders as $order)
-                    <tr>
-                        <td>{{ $order->id }}</td>
-                        <td>{{ $order->receiver_name ?? $order->user->name ?? 'N/A' }}</td>
-                        <td>{{ $order->phone ?? 'N/A' }}</td>
-                        <td>{{ $order->address }}</td>
-                        <td>
-                            @switch($order->status)
-                            @case('pending') <span class="badge bg-warning text-dark">Chờ xử lý</span> @break
-                            @case('shipping') <span class="badge bg-info text-dark">Đang giao</span> @break
-                            @case('completed') <span class="badge bg-success">Hoàn thành</span> @break
-                            @case('cancelled') <span class="badge bg-secondary">Đã hủy</span> @break
-                            @default <span class="badge bg-light text-dark">{{ $order->status }}</span>
-                            @endswitch
-                        </td>
-                        <td>
-                            <button class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#modal{{$order->id}}">Chi tiết</button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Khách hàng</th>
+                            <th>SĐT</th>
+                            <th>Địa chỉ</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($orders as $order)
+                        <tr>
+                            <td>{{ $order->id }}</td>
+                            <td>{{ $order->receiver_name ?? $order->user->name ?? 'N/A' }}</td>
+                            <td>{{ $order->phone ?? 'N/A' }}</td>
+                            <td>{{ $order->address }}</td>
+                            <td>
+                                @switch($order->status)
+                                @case('pending') <span class="badge bg-warning text-dark">Chờ xử lý</span> @break
+                                @case('shipping') <span class="badge bg-info text-dark">Đang giao</span> @break
+                                @case('completed') <span class="badge bg-success">Hoàn thành</span> @break
+                                @case('cancelled') <span class="badge bg-secondary">Đã hủy</span> @break
+                                @default <span class="badge bg-light text-dark">{{ $order->status }}</span>
+                                @endswitch
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modal{{$order->id}}">Chi tiết</button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
             @endif
         </div>
         @endforeach
     </div>
 </div>
+
+<style>
+@media (max-width: 767.98px) {
+    .admin-orders-page .nav-tabs .nav-link {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    .admin-orders-page .table td,
+    .admin-orders-page .table th {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+}
+</style>
 
 @foreach(['pending' => $pending, 'shipping' => $shipping, 'completed' => $completed, 'cancelled' => $cancelled] as $tab
 => $orders)
@@ -114,6 +130,7 @@
                     </div>
                 </div>
 
+                <div class="table-responsive">
                 <table class="table table-bordered mb-0">
                     <thead>
                         <tr>
@@ -155,19 +172,28 @@
                     </tfoot>
                 </table>
             </div>
+        </div>
             <div class="modal-footer">
                 @if($order->status == 'pending')
                 <form method="POST" action="{{ route('admin.orders.status', $order->id) }}" class="d-inline">
                     @csrf
                     <button name="status" value="shipping" class="btn btn-success">Chuyển giao hàng</button>
-                    <button name="status" value="cancelled" class="btn btn-danger">Hủy đơn</button>
+                </form>
+                <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button class="btn btn-danger">Hủy đơn</button>
                 </form>
                 @endif
                 @if($order->status == 'shipping')
                 <form method="POST" action="{{ route('admin.orders.status', $order->id) }}" class="d-inline">
                     @csrf
                     <button name="status" value="completed" class="btn btn-success">Xác nhận hoàn thành</button>
-                    <button name="status" value="cancelled" class="btn btn-danger">Hủy đơn</button>
+                </form>
+                <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button class="btn btn-danger">Hủy đơn</button>
                 </form>
                 @endif
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

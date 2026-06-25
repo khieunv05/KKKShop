@@ -29,20 +29,41 @@ class OrderController extends Controller
     {
         $order = Order::with('products')->findOrFail($id);
 
-        if ($order->status !== 'cancelled') {
+        if ($order->status === 'cancelled') {
+            return back()->with('error', 'Đơn hàng đã bị hủy trước đó.');
+        }
+
+        if ($order->is_paid === 'paid') {
             $inventoryService->restoreForCancelledOrder($order);
+
+            if ($order->payment_method === 'qr') {
+                $user = $order->user;
+                $totalDue = $order->total_price + $order->shipping_fee;
+                $user->current_balance += $totalDue;
+                $user->save();
+            }
         }
 
         $order->update([
             'status' => 'cancelled',
         ]);
 
-        return back()->with('success', 'Đơn hàng đã bị hủy và kho được hoàn lại.');
+        return back()->with('success', 'Đơn hàng đã bị hủy' . ($order->is_paid === 'paid' ? ' và đã hoàn tiền.' : '.'));
     }
 
-    public function confirmByUser(Order $order)
+    public function confirmByUser(Order $order, InventoryService $inventoryService)
     {
         if ($order->status !== 'cancelled') {
+            $inventoryService->deductForPaidOrder($order);
+
+            $cart = session()->get('cart', []);
+            foreach ($order->products as $product) {
+                if (isset($cart[$product->id])) {
+                    unset($cart[$product->id]);
+                }
+            }
+            session()->put('cart', $cart);
+
             $order->update([
                 'status' => 'completed',
                 'is_paid' => 'paid',
@@ -52,7 +73,7 @@ class OrderController extends Controller
         return back()->with('error', 'Đơn hàng đã bị hủy và không thể xác nhận.');
     }
 
-    public function payByBalance(Request $request, $id)
+    public function payByBalance(Request $request, $id, InventoryService $inventoryService)
     {
         $order = Order::findOrFail($id);
         $user = auth()->user();
@@ -75,9 +96,19 @@ class OrderController extends Controller
         $user->current_balance -= $totalDue;
         $user->save();
 
+        $inventoryService->deductForPaidOrder($order);
+
         $order->update([
             'is_paid' => 'paid',
         ]);
+
+        $cart = session()->get('cart', []);
+        foreach ($order->products as $product) {
+            if (isset($cart[$product->id])) {
+                unset($cart[$product->id]);
+            }
+        }
+        session()->put('cart', $cart);
 
         return redirect()->route('orders.index')->with('success', 'Thanh toán đơn hàng #' . $order->id . ' thành công!');
     }

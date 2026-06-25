@@ -7,29 +7,12 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function publicIndex(Request $request)
     {
         $allCategories = Category::orderBy('name')->get();
-
-        $imageConfig = [
-            'CPU'           => 'https://nguyencongpc.vn/media/product/250-25342-14700k.png',
-            'Mainboard'     => 'https://nguyencongpc.vn/media/product/250-27886-mainboard-msi-b760m-gaming-wifi-ddr5-5.jpg',
-            'PC Gaming'     => 'https://ttgshop.vn/media/product/250_1071871333_13110_dsc00342_copy_e15810bfa2c74f2ea64d272cd24e9da0.jpg',
-            'PC Workstation' => 'https://ttgshop.vn/media/product/250_1071570206_pc_ttg_designer_3d_render_edit_video_i7_14700f_rtx_5060_ti_8gb_all_new_bao_hanh_36_thang1__1_.jpg',
-            'RAM'           => 'https://nguyencongpc.vn/media/product/250-27096-ram-lexar-ares-rgb-32gb-2-16gb-ddr5-6000mhz-1.jpg',
-            'SSD'           => 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/product/1/t/1tb_1.png',
-        ];
-
-        $categoryImageMap = [];
-        foreach ($allCategories as $cat) {
-            if (isset($imageConfig[$cat->name])) {
-                $categoryImageMap[$cat->id] = $imageConfig[$cat->name];
-            }
-        }
 
         if ($request->filled('q')) {
             $keyword = $request->input('q');
@@ -43,7 +26,7 @@ class ProductController extends Controller
                 ->paginate(12)
                 ->withQueryString();
 
-            return view('products.index', compact('products', 'allCategories', 'categoryImageMap'));
+            return view('products.index', compact('products', 'allCategories'));
         }
 
         if ($request->filled('category')) {
@@ -54,14 +37,14 @@ class ProductController extends Controller
                 ->paginate(12)
                 ->withQueryString();
 
-            return view('products.index', compact('products', 'allCategories', 'cat', 'categoryImageMap'));
+            return view('products.index', compact('products', 'allCategories', 'cat'));
         }
 
         $categoryGroups = Category::with(['products' => function ($query) {
             $query->where('is_active', true)->orderByDesc('created_at');
         }])->orderBy('name')->get();
 
-        return view('products.index', compact('categoryGroups', 'allCategories', 'categoryImageMap'));
+        return view('products.index', compact('categoryGroups', 'allCategories'));
     }
 
     public function index(Request $request)
@@ -171,11 +154,6 @@ class ProductController extends Controller
             ->where('name', 'like', '%' . $keyword . '%')
             ->limit(8)
             ->get(['id', 'name', 'price', 'image']);
-
-        $products->transform(function ($product) {
-            $product->image_url = $product->image ? Storage::url($product->image) : null;
-            return $product;
-        });
 
         return response()->json($products);
     }
