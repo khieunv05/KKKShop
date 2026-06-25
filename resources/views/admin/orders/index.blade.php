@@ -178,14 +178,22 @@
                 <form method="POST" action="{{ route('admin.orders.status', $order->id) }}" class="d-inline">
                     @csrf
                     <button name="status" value="shipping" class="btn btn-success">Chuyển giao hàng</button>
-                    <button name="status" value="cancelled" class="btn btn-danger">Hủy đơn</button>
+                </form>
+                <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button class="btn btn-danger">Hủy đơn</button>
                 </form>
                 @endif
                 @if($order->status == 'shipping')
                 <form method="POST" action="{{ route('admin.orders.status', $order->id) }}" class="d-inline">
                     @csrf
                     <button name="status" value="completed" class="btn btn-success">Xác nhận hoàn thành</button>
-                    <button name="status" value="cancelled" class="btn btn-danger">Hủy đơn</button>
+                </form>
+                <form method="POST" action="{{ route('admin.orders.cancel', $order->id) }}" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button class="btn btn-danger">Hủy đơn</button>
                 </form>
                 @endif
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>

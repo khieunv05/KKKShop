@@ -138,11 +138,7 @@ class CartController extends Controller
                     'quantity' => $item['quantity'],
                     'price' => $item['product']->price,
                 ]);
-
-                Product::where('id', $id)->decrement('stock', $item['quantity']);
             }
-
-            session()->forget('cart');
         });
 
         if ($request->payment_method === 'qr') {
