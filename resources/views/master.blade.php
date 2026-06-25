@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PC Shop</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
@@ -127,6 +128,76 @@
             text-align: center;
             color: #999;
             font-size: 14px;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 767.98px) {
+            .header-top .container > .row > div:first-child {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                width: 100%;
+                margin-bottom: 6px;
+            }
+            .header-top .container > .row > div:first-child a {
+                font-size: 12px;
+            }
+            .header-top .container > .row > div:last-child {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+                width: 100%;
+                font-size: 12px;
+            }
+            .header-top .container > .row > div:last-child span {
+                display: none;
+            }
+            .navbar .ms-auto.d-flex.gap-4 {
+                gap: 12px !important;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .category-nav {
+                overflow-x: auto;
+                flex-wrap: nowrap !important;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 4px;
+            }
+            .category-nav::-webkit-scrollbar {
+                display: none;
+            }
+            .category-nav a {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .category-nav a:last-child {
+                padding-right: 16px;
+            }
+            .suggestions-dropdown {
+                position: fixed !important;
+                left: 8px !important;
+                right: 8px !important;
+                width: auto !important;
+                top: auto !important;
+                max-height: 300px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .header-top {
+                padding: 8px 0 !important;
+            }
+            .navbar-brand {
+                font-size: 16px !important;
+            }
+            .navbar-brand i {
+                font-size: 22px !important;
+            }
         }
     </style>
 </head>

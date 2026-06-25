@@ -59,10 +59,32 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
 
+        $quantity = isset($cart[$id])
+            ? max(1, min((int) $request->quantity, $product->stock))
+            : 1;
+
         if (isset($cart[$id])) {
-            $quantity = max(1, min((int) $request->quantity, $product->stock));
             $cart[$id]['quantity'] = $quantity;
             session()->put('cart', $cart);
+        }
+
+        $total = 0;
+        $cart = session()->get('cart', []);
+        foreach ($cart as $item) {
+            $total += $item['product']->price * $item['quantity'];
+        }
+
+        $subtotal = $product->price * $quantity;
+        $itemCount = array_sum(array_column($cart, 'quantity'));
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'subtotal' => number_format($subtotal, 0, ',', '.') . ' ₫',
+                'total' => number_format($total, 0, ',', '.') . ' ₫',
+                'total_raw' => $total,
+                'quantity' => $quantity,
+                'item_count' => $itemCount,
+            ]);
         }
 
         return redirect()->route('cart.index');

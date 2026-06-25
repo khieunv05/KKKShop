@@ -62,14 +62,14 @@
                                     data-bs-toggle="collapse" data-bs-target="#collapse-{{ $order->id }}"
                                     aria-expanded="false" aria-controls="collapse-{{ $order->id }}">
                                     <div
-                                        class="w-100 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                                        <span>Đơn #{{ $order->id }}</span>
-                                        <span class="text-muted">{{ $order->created_at?->format('d/m/Y H:i') }}</span>
+                                        class="w-100 d-flex flex-wrap justify-content-between align-items-center gap-1 gap-sm-2">
+                                        <span class="fw-bold">Đơn #{{ $order->id }}</span>
+                                        <span class="text-muted small">{{ $order->created_at?->format('d/m/Y H:i') }}</span>
                                         <span class="badge bg-secondary text-uppercase">{{ $order->status }}</span>
                                         <span
                                             class="badge {{ $order->is_paid === 'paid' ? 'bg-success' : 'bg-warning text-dark' }}">{{
                                             $order->is_paid === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}</span>
-                                        <span class="text-muted">{{ $itemCount }} sản phẩm</span>
+                                        <span class="text-muted small">{{ $itemCount }} sản phẩm</span>
                                     </div>
                                 </button>
                             </h2>
@@ -129,10 +129,7 @@
                                             <tbody>
                                                 @foreach($order->products as $product)
                                                 @php
-                                                $imageUrl = $product->image
-                                                ? (str_starts_with($product->image, 'http') ? $product->image :
-                                                asset('storage/' . $product->image))
-                                                : 'https://placehold.co/60x60?text=No+Img';
+                                                $imageUrl = $product->image_url ?? 'https://placehold.co/60x60?text=No+Img';
                                                 @endphp
                                                 <tr>
                                                     <td>

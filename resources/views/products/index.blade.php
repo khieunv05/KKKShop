@@ -169,6 +169,87 @@
     .search-result-header strong {
         color: #333;
     }
+
+    @media (max-width: 767.98px) {
+        .product-card {
+            flex: 0 0 calc((100% - 16px) / 2) !important;
+            min-width: 160px !important;
+        }
+        .carousel-track {
+            gap: 10px;
+        }
+        .carousel-wrap .scroll-btn {
+            display: flex !important;
+            width: 32px;
+            height: 32px;
+            font-size: 12px;
+        }
+        .carousel-wrap .scroll-btn.prev {
+            left: -6px;
+        }
+        .carousel-wrap .scroll-btn.next {
+            right: -6px;
+        }
+        .carousel-item > div {
+            height: 180px !important;
+            padding: 20px !important;
+        }
+        .carousel-item h2 {
+            font-size: 18px !important;
+        }
+        .carousel-item p {
+            font-size: 14px !important;
+        }
+        .category-title-block {
+            font-size: 14px !important;
+            padding: 6px 16px 6px 12px !important;
+        }
+        .product-card .prod-name {
+            font-size: 12px !important;
+            min-height: 2.4em !important;
+            -webkit-line-clamp: 2 !important;
+        }
+        .product-card .prod-price {
+            font-size: 15px !important;
+        }
+        .product-card .prod-price .vnd {
+            font-size: 11px !important;
+        }
+        .product-card .prod-old-price {
+            font-size: 12px !important;
+        }
+        .product-card .add-cart-btn {
+            font-size: 11px !important;
+        }
+        .product-card .cart-icon-circle {
+            width: 30px;
+            height: 30px;
+            font-size: 13px;
+        }
+        .product-card .info-wrap {
+            padding: 10px 10px 12px !important;
+        }
+        .search-result-header {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .product-card {
+            flex: 0 0 calc(100% - 0px) !important;
+            min-width: 0 !important;
+        }
+        .carousel-item > div {
+            height: 150px !important;
+            padding: 14px !important;
+        }
+        .carousel-item h2 {
+            font-size: 16px !important;
+        }
+        .carousel-item p {
+            font-size: 13px !important;
+        }
+    }
 </style>
 
 <div class="container py-3">

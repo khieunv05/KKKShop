@@ -52,10 +52,15 @@
                 <tbody>
                     @forelse($products as $product)
                         <tr>
-                            <td class="fw-semibold">{{ $product->name }}</td>
+                            <td>
+                                <div class="fw-semibold">{{ $product->name }}</div>
+                                @if($product->description)
+                                    <div class="text-muted small mt-1" style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $product->description }}</div>
+                                @endif
+                            </td>
                             <td style="width:96px;">
-                                @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="rounded" style="width:72px; height:72px; object-fit:cover;">
+                                @if($product->image_url)
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="rounded" style="width:72px; height:72px; object-fit:cover;">
                                 @else
                                     <div class="rounded bg-light d-flex align-items-center justify-content-center text-muted" style="width:72px; height:72px;">
                                         <i class="fa-solid fa-image fa-lg"></i>

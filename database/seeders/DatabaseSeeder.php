@@ -9,6 +9,9 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -54,6 +57,17 @@ class DatabaseSeeder extends Seeder
 
         $categories = DB::table('categories')->pluck('id', 'name');
 
+        $categoryImages = [
+            'Laptop'              => 'https://nguyencongpc.vn/media/product/250-23966-laptop-msi-modern-14-c7m-205xv-01-638607589205347493.jpg',
+            'PC Gaming'           => 'https://ttgshop.vn/media/product/250_1071871333_13110_dsc00342_copy_e15810bfa2c74f2ea64d272cd24e9da0.jpg',
+            'Màn hình'            => 'https://nguyencongpc.vn/media/product/250-26511-man-hinh-lg-27gp850-b-27-2k-165hz-1-638472275878912689.jpg',
+            'Linh kiện'           => 'https://nguyencongpc.vn/media/product/250-25342-14700k.png',
+            'Thiết bị ngoại vi'   => 'https://nguyencongpc.vn/media/product/250-17050-akko-3087-black-gold.jpg',
+            'Lưu trữ'             => 'https://cdn2.cellphones.com.vn/insecure/rs:fill:0:358/q:90/plain/https://cellphones.com.vn/media/product/1/t/1tb_1.png',
+        ];
+
+        $downloaded = [];
+
         $products = collect();
         $productData = [
             ['Laptop ASUS Vivobook 14 OLED', 'Laptop mỏng nhẹ, màn hình OLED, phù hợp học tập và làm việc', 18990000, 20990000, 12, 24, ['Laptop']],
@@ -73,9 +87,30 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($productData as [$name, $description, $price, $oldPrice, $stock, $warranty, $catNames]) {
+            $imagePath = null;
+            foreach ($catNames as $catName) {
+                if (!isset($downloaded[$catName]) && isset($categoryImages[$catName])) {
+                    try {
+                        $ext = pathinfo(parse_url($categoryImages[$catName], PHP_URL_PATH), PATHINFO_EXTENSION);
+                        $ext = $ext ?: 'jpg';
+                        $filename = 'products/' . Str::slug($catName) . '.' . $ext;
+                        $response = Http::timeout(10)->get($categoryImages[$catName]);
+                        if ($response->successful()) {
+                            Storage::disk('public')->put($filename, $response->body());
+                            $downloaded[$catName] = $filename;
+                        }
+                    } catch (\Exception $e) {
+                        $downloaded[$catName] = null;
+                    }
+                }
+                if (isset($downloaded[$catName])) {
+                    $imagePath = $downloaded[$catName];
+                }
+            }
+
             $product = Product::updateOrCreate(
                 ['name' => $name],
-                ['description' => $description, 'price' => $price, 'old_price' => $oldPrice, 'stock' => $stock, 'warranty' => $warranty, 'image' => null, 'is_active' => true]
+                ['description' => $description, 'price' => $price, 'old_price' => $oldPrice, 'stock' => $stock, 'warranty' => $warranty, 'image' => $imagePath, 'is_active' => true]
             );
             $products->put($name, $product);
             foreach ($catNames as $catName) {
