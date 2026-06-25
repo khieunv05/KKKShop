@@ -13,7 +13,7 @@ class OrderController extends Controller
     {
         $order = Order::with('products')->findOrFail($id);
 
-        if ($order->is_paid !== 'paid') {
+        if ($order->is_paid !== 'paid' && $order->payment_method !== 'cod') {
             $inventoryService->deductForPaidOrder($order);
         }
 
@@ -33,10 +33,18 @@ class OrderController extends Controller
             return back()->with('error', 'Đơn hàng đã bị hủy trước đó.');
         }
 
-        if ($order->is_paid === 'paid') {
+        $shouldRestore = false;
+
+        if ($order->payment_method === 'cod') {
+            $shouldRestore = true;
+        } elseif ($order->is_paid === 'paid') {
+            $shouldRestore = true;
+        }
+
+        if ($shouldRestore) {
             $inventoryService->restoreForCancelledOrder($order);
 
-            if ($order->payment_method === 'qr') {
+            if ($order->payment_method === 'qr' && $order->is_paid === 'paid') {
                 $user = $order->user;
                 $totalDue = $order->total_price + $order->shipping_fee;
                 $user->current_balance += $totalDue;
@@ -48,29 +56,32 @@ class OrderController extends Controller
             'status' => 'cancelled',
         ]);
 
-        return back()->with('success', 'Đơn hàng đã bị hủy' . ($order->is_paid === 'paid' ? ' và đã hoàn tiền.' : '.'));
+        $msg = 'Đơn hàng đã bị hủy.';
+        if ($shouldRestore) {
+            $msg = 'Đơn hàng đã bị hủy và đã hoàn kho.';
+            if ($order->payment_method === 'qr' && $order->is_paid === 'paid') {
+                $msg = 'Đơn hàng đã bị hủy, đã hoàn kho và hoàn tiền.';
+            }
+        }
+
+        return back()->with('success', $msg);
     }
 
-    public function confirmByUser(Order $order, InventoryService $inventoryService)
+    public function confirmByUser(Order $order)
     {
-        if ($order->status !== 'cancelled') {
-            $inventoryService->deductForPaidOrder($order);
-
-            $cart = session()->get('cart', []);
-            foreach ($order->products as $product) {
-                if (isset($cart[$product->id])) {
-                    unset($cart[$product->id]);
-                }
-            }
-            session()->put('cart', $cart);
-
-            $order->update([
-                'status' => 'completed',
-                'is_paid' => 'paid',
-            ]);
-            return back()->with('success', 'Đơn hàng đã được xác nhận.');
+        if ($order->status === 'completed') {
+            return back()->with('error', 'Đơn hàng đã được hoàn thành trước đó.');
         }
-        return back()->with('error', 'Đơn hàng đã bị hủy và không thể xác nhận.');
+
+        if ($order->status === 'cancelled') {
+            return back()->with('error', 'Đơn hàng đã bị hủy và không thể xác nhận.');
+        }
+
+        $order->update([
+            'status' => 'completed',
+            'is_paid' => 'paid',
+        ]);
+        return back()->with('success', 'Đơn hàng đã được xác nhận.');
     }
 
     public function payByBalance(Request $request, $id, InventoryService $inventoryService)
