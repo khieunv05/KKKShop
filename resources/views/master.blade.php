@@ -132,7 +132,7 @@
 
         /* ===== Responsive ===== */
         @media (max-width: 767.98px) {
-            .header-top .container > .row > div:first-child {
+            .header-top .container>.row>div:first-child {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
@@ -140,10 +140,12 @@
                 width: 100%;
                 margin-bottom: 6px;
             }
-            .header-top .container > .row > div:first-child a {
+
+            .header-top .container>.row>div:first-child a {
                 font-size: 12px;
             }
-            .header-top .container > .row > div:last-child {
+
+            .header-top .container>.row>div:last-child {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
@@ -151,9 +153,11 @@
                 width: 100%;
                 font-size: 12px;
             }
-            .header-top .container > .row > div:last-child span {
+
+            .header-top .container>.row>div:last-child span {
                 display: none;
             }
+
             .navbar .ms-auto.d-flex.gap-4 {
                 gap: 12px !important;
                 flex-wrap: wrap;
@@ -161,6 +165,7 @@
                 width: 100%;
                 margin-top: 10px;
             }
+
             .category-nav {
                 overflow-x: auto;
                 flex-wrap: nowrap !important;
@@ -168,16 +173,20 @@
                 scrollbar-width: none;
                 padding-bottom: 4px;
             }
+
             .category-nav::-webkit-scrollbar {
                 display: none;
             }
+
             .category-nav a {
                 white-space: nowrap;
                 flex-shrink: 0;
             }
+
             .category-nav a:last-child {
                 padding-right: 16px;
             }
+
             .suggestions-dropdown {
                 position: fixed !important;
                 left: 8px !important;
@@ -192,9 +201,11 @@
             .header-top {
                 padding: 8px 0 !important;
             }
+
             .navbar-brand {
                 font-size: 16px !important;
             }
+
             .navbar-brand i {
                 font-size: 22px !important;
             }
@@ -225,13 +236,13 @@
                     <a href="{{ route('admin.products.index') }}" class="text-white text-decoration-none me-2">Quản trị</a>
                     <span class="text-white me-2">|</span>
                     @endif
-                        <a href="{{ route('orders.index') }}" class="text-white text-decoration-none me-2">Đơn hàng của tôi</a>
-                        <span class="text-white me-2">|</span>
-                        <a href="{{ route('user.add-money') }}" class="text-white text-decoration-none me-2">
-                            <i class="fas fa-wallet me-1"></i>{{ number_format(auth()->user()->current_balance, 0, ',', '.') }} ₫
-                        </a>
-                        <span class="text-white me-2">|</span>
-                        <a href="{{ route('profile.edit') }}" class="text-white text-decoration-none">Thông tin tài khoản</a>
+                    <a href="{{ route('orders.index') }}" class="text-white text-decoration-none me-2">Đơn hàng của tôi</a>
+                    <span class="text-white me-2">|</span>
+                    <a href="{{ route('user.add-money') }}" class="text-white text-decoration-none me-2">
+                        <i class="fas fa-wallet me-1"></i>{{ number_format(auth()->user()->current_balance, 0, ',', '.') }} ₫
+                    </a>
+                    <span class="text-white me-2">|</span>
+                    <a href="{{ route('profile.edit') }}" class="text-white text-decoration-none">Thông tin tài khoản</a>
                     <span class="text-white me-2">|</span>
                     <form method="POST" action="{{ route('logout') }}" class="d-inline-block">
                         @csrf
@@ -248,7 +259,7 @@
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand fw-bold" href="{{ url('/') }}" style="font-size: 20px; color: #0a3a5c !important; white-space: nowrap;">
-                <i class="fas fa-cube" style="font-size: 28px; color: #ff6b35; margin-right: 8px;"></i>PC SHOP
+                <i class="fas fa-cube" style="font-size: 28px; color: #ff6b35; margin-right: 8px;"></i>KKK SHOP
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -268,14 +279,7 @@
 
                 <!-- Right Menu -->
                 <div class="ms-auto d-flex gap-4">
-                    <a href="#" class="text-decoration-none text-dark text-center" style="font-size: 12px; white-space: nowrap;">
-                        <i class="fas fa-phone-alt d-block" style="font-size: 20px; margin-bottom: 4px;"></i>
-                        <span>Hotline mua hàng</span>
-                    </a>
-                    <a href="#" class="text-decoration-none text-dark text-center" style="font-size: 12px; white-space: nowrap;">
-                        <i class="fas fa-cube d-block" style="font-size: 20px; margin-bottom: 4px;"></i>
-                        <span>Cấu hình PC</span>
-                    </a>
+
                     <a href="{{ route('cart.index') }}" class="text-decoration-none text-dark text-center" style="font-size: 12px; white-space: nowrap;">
                         <i class="fas fa-shopping-cart d-block" style="font-size: 20px; margin-bottom: 4px;"></i>
                         <span>Giỏ hàng ({{ count(session()->get('cart', [])) }})</span>
